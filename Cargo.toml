@@ -1,0 +1,8 @@
+[package]
+
+name = "cavers"
+version = "0.0.1"
+authors = ["jffjs <jffreyjs@gmail.com>"]
+
+[dependencies.tcod]
+git = "https://github.com/tomassedovic/tcod-rs.git"
