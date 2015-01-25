@@ -2,43 +2,22 @@
 extern crate tcod;
 extern crate cavers;
 
+use tcod::{Console, KeyCode};
+use tcod::Key::Special;
 use cavers::entity::character::Character;
 use cavers::entity::mob::Mob;
 use cavers::entity::traits::Updates;
 use cavers::game::Game;
-use cavers::geom::{Point, Bounds};
-use tcod::{Console, KeyCode};
-use tcod::Key::Special;
-
-fn render(con: &mut Console, objs: &Vec<Box<Updates>>) {
-    con.clear();
-    for i in objs.iter() {
-        i.render(con);
-    }
-    Console::flush();
-}
-
-fn update(objs: &mut Vec<Box<Updates>>, keypress: &tcod::KeyState, game: &Game) {
-    for i in objs.iter_mut() {
-        i.update(keypress, game);
-    }
-}
 
 fn main() {
-    let mut game = Game {
-        exit: false,
-        window_bounds: Bounds {
-            min: Point { x: 0, y: 0 },
-            max: Point { x: 79, y: 49 }
-        }
-    };
-    let mut con = Console::init_root(game.window_bounds.max.x + 1, game.window_bounds.max.y + 1, "cavers", false);
-    let c = box Character::new(40, 25, '@') as Box<Updates>;
+    let mut game = Game::new();
+    let mut c = Character::new(40, 25, '@');
     
     let d = box Mob::new(10, 10, 'd') as Box<Updates>;
-    let mut objs: Vec<Box<Updates>> = vec![c, d];
+    let ct = box Mob::new(40, 25, 'c') as Box<Updates>;
+    let mut mobs: Vec<Box<Updates>> = vec![d, ct];
     
-    render(&mut con, &objs);
+    game.render(&mobs, &c);
     while !(Console::window_closed() || game.exit) {
         // wait for user input
         let keypress = Console::wait_for_keypress(true);
@@ -48,9 +27,9 @@ fn main() {
             Special(KeyCode::Escape) => game.exit = true,
             _ => {}
         }
-        update(&mut objs, &keypress, &game);
+        game.update(&mut mobs, &mut c, &keypress);
 
         // render
-        render(&mut con, &objs);
+        game.render(&mobs, &c);
     }
 }

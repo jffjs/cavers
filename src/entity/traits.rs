@@ -1,8 +1,8 @@
 extern crate tcod;
-use self::tcod::{Console};
 use game::Game;
+use rendering::rendering_component::RenderingComponent;
 
 pub trait Updates {
-    fn update(&mut self, &tcod::KeyState, &Game);
-    fn render(&self, &mut Console);
+    fn update(&mut self, &Game);
+    fn render(&self, &mut Box<RenderingComponent>);
 }

@@ -1,5 +1,6 @@
 use geom::Contains::{DoesContain, DoesNotContain};
 
+#[derive(Copy)]
 pub struct Point {
     pub x: i32,
     pub y: i32
@@ -19,11 +20,13 @@ impl Point {
     }
 }
 
+#[derive(Copy)]
 pub enum Contains {
     DoesContain,
     DoesNotContain
 }
 
+#[derive(Copy)]
 pub struct Bounds {
     pub min: Point,
     pub max: Point

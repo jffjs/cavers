@@ -1,12 +1,14 @@
 extern crate tcod;
+
 use std;
 use std::rand::distributions::{IndependentSample, Range};
-use self::tcod::{Console, BackgroundFlag};
 use entity::traits::Updates;
 use game::Game;
 use geom::Point;
 use geom::Contains::{DoesContain, DoesNotContain};
+use rendering::rendering_component::RenderingComponent;
 
+#[derive(Copy)]
 pub struct Mob {
     pub position: Point,
     pub glyph: char
@@ -19,7 +21,7 @@ impl Mob {
 }
 
 impl Updates for Mob {
-    fn update(&mut self, kepress: &tcod::KeyState, game: &Game) {
+    fn update(&mut self, game: &Game) {
         let btwn = Range::new(0,3);
         let mut rng = std::rand::thread_rng();
         
@@ -36,8 +38,8 @@ impl Updates for Mob {
         }
     }
 
-    fn render(&self, console: &mut Console) {
-        console.put_char(self.position.x, self.position.y, self.glyph, BackgroundFlag::Set);
+    fn render(&self, renderer: &mut Box<RenderingComponent>) {
+        renderer.render_object(&self.position, self.glyph);
     }
 }
 

@@ -1,11 +1,13 @@
 extern crate tcod;
-use self::tcod::{Console, BackgroundFlag, KeyCode};
+
+use self::tcod::{KeyCode};
 use self::tcod::Key::Special;
-use entity::traits::Updates;
 use game::Game;
 use geom::Point;
 use geom::Contains::{DoesContain, DoesNotContain};
+use rendering::rendering_component::RenderingComponent;
 
+#[derive(Copy)]
 pub struct Character {
     pub position: Point,
     pub glyph: char
@@ -15,10 +17,8 @@ impl Character {
     pub fn new(x: i32, y: i32, glyph: char) -> Character {
         Character { position: Point { x: x, y: y }, glyph: glyph }
     }
-}
 
-impl Updates for Character {
-    fn update(&mut self, keypress: &tcod::KeyState, game: &Game) {
+    pub fn update(&mut self, keypress: &tcod::KeyState, game: &Game) {
         let mut offset = Point { x: 0, y: 0 };
         match keypress.key {
             Special(KeyCode::Up) => {
@@ -42,7 +42,7 @@ impl Updates for Character {
         }
     }
 
-    fn render(&self, console: &mut Console) {
-        console.put_char(self.position.x, self.position.y, self.glyph, BackgroundFlag::Set);
+    pub fn render(&self, renderer: &mut Box<RenderingComponent>) {
+        renderer.render_object(&self.position, self.glyph);
     }
 }
