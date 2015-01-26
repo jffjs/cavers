@@ -25,7 +25,7 @@ impl<'a> Game<'a> {
 
         let console = Console::init_root(bounds.max.x + 1, bounds.max.y + 1, "cavers", false);
         let rc: Box<TcodRenderingComponent> = box TcodRenderingComponent::new(console);
-        let map = Map::new(bounds, terrain::random::cave(bounds, 3));
+        let map = Map::new(bounds, terrain::random::cave(bounds, 4));
         Game {
             exit: false,
             window_bounds: bounds,

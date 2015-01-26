@@ -8,7 +8,6 @@ use cavers::entity::character::Character;
 use cavers::entity::mob::Mob;
 use cavers::entity::traits::Updates;
 use cavers::game::Game;
-use cavers::map::Map;
 
 fn main() {
     let mut game = Game::new();
