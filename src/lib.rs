@@ -5,3 +5,4 @@ pub mod geom;
 pub mod game;
 pub mod map;
 pub mod rendering;
+pub mod terrain;

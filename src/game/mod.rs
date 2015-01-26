@@ -5,13 +5,15 @@ use entity::character::Character;
 use entity::traits::Updates;
 use geom::{Bounds, Point};
 use map::Map;
+use terrain;
 use rendering::rendering_component::RenderingComponent;
 use rendering::tcod_rendering_component::TcodRenderingComponent;
 
 pub struct Game<'a> {
     pub exit: bool,
     pub window_bounds: Bounds,
-    pub rendering_component: Box<RenderingComponent + 'a>
+    pub rendering_component: Box<RenderingComponent + 'a>,
+    pub map: Map<'a>
 }
 
 impl<'a> Game<'a> {
@@ -23,16 +25,18 @@ impl<'a> Game<'a> {
 
         let console = Console::init_root(bounds.max.x + 1, bounds.max.y + 1, "cavers", false);
         let rc: Box<TcodRenderingComponent> = box TcodRenderingComponent::new(console);
+        let map = Map::new(bounds, terrain::random::cave(bounds, 3));
         Game {
             exit: false,
             window_bounds: bounds,
-            rendering_component: rc
+            rendering_component: rc,
+            map: map
         }
     }
 
-    pub fn render(&mut self, map: &Map, mobs: &Vec<Box<Updates>>, c: &Character) {
+    pub fn render(&mut self, mobs: &Vec<Box<Updates>>, c: &Character) {
         self.rendering_component.before_render_new_frame();
-        map.render(&mut self.rendering_component);
+        self.map.render(&mut self.rendering_component);
         for i in mobs.iter() {
             i.render(&mut self.rendering_component);
         }
