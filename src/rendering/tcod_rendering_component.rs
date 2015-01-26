@@ -1,5 +1,5 @@
 extern crate tcod;
-use self::tcod::{Console, BackgroundFlag};
+use self::tcod::{Color, Console, BackgroundFlag};
 use geom::{Point};
 use rendering::rendering_component::RenderingComponent;
 
@@ -13,6 +13,7 @@ impl TcodRenderingComponent {
             console: console
         }
     }
+
 }
 
 impl RenderingComponent for TcodRenderingComponent {
@@ -22,6 +23,10 @@ impl RenderingComponent for TcodRenderingComponent {
 
     fn render_object(&mut self, position: &Point, glyph: char) {
         self.console.put_char(position.x, position.y, glyph, BackgroundFlag::Set);
+    }
+
+    fn render_object_with_color(&mut self, position: &Point, glyph: char, fore_color: Color, back_color: Color) {
+        self.console.put_char_ex(position.x, position.y, glyph, fore_color, back_color);
     }
 
     fn after_render_new_frame(&mut self) {

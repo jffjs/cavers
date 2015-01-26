@@ -4,6 +4,7 @@ use self::tcod::{Console};
 use entity::character::Character;
 use entity::traits::Updates;
 use geom::{Bounds, Point};
+use map::Map;
 use rendering::rendering_component::RenderingComponent;
 use rendering::tcod_rendering_component::TcodRenderingComponent;
 
@@ -29,8 +30,9 @@ impl<'a> Game<'a> {
         }
     }
 
-    pub fn render(&mut self, mobs: &Vec<Box<Updates>>, c: &Character) {
+    pub fn render(&mut self, map: &Map, mobs: &Vec<Box<Updates>>, c: &Character) {
         self.rendering_component.before_render_new_frame();
+        map.render(&mut self.rendering_component);
         for i in mobs.iter() {
             i.render(&mut self.rendering_component);
         }

@@ -8,6 +8,7 @@ use cavers::entity::character::Character;
 use cavers::entity::mob::Mob;
 use cavers::entity::traits::Updates;
 use cavers::game::Game;
+use cavers::map::Map;
 
 fn main() {
     let mut game = Game::new();
@@ -16,8 +17,10 @@ fn main() {
     let d = box Mob::new(10, 10, 'd') as Box<Updates>;
     let ct = box Mob::new(40, 25, 'c') as Box<Updates>;
     let mut mobs: Vec<Box<Updates>> = vec![d, ct];
+    let mut map = Map::random_cave(game.window_bounds);
+    // map.smooth();
     
-    game.render(&mobs, &c);
+    game.render(&map, &mobs, &c);
     while !(Console::window_closed() || game.exit) {
         // wait for user input
         let keypress = Console::wait_for_keypress(true);
@@ -30,6 +33,6 @@ fn main() {
         game.update(&mut mobs, &mut c, &keypress);
 
         // render
-        game.render(&mobs, &c);
+        game.render(&map, &mobs, &c);
     }
 }

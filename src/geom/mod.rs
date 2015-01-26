@@ -7,6 +7,10 @@ pub struct Point {
 }
 
 impl Point {
+    pub fn new(x: i32, y: i32) -> Point {
+        Point {x: x, y: y }
+    }
+
     pub fn offset_x(&self, offset: i32) -> Point {
         Point { x: self.x + offset, y: self.y }
     }
@@ -18,6 +22,15 @@ impl Point {
     pub fn offset(&self, offset: &Point) -> Point {
         Point { x: self.x + offset.x, y: self.y + offset.y }
     }
+
+    pub fn adjacent(&self) -> Vec<Point> {
+        let offsets = vec![Point::new(-1, -1), Point::new(0, -1), Point::new(1, -1),
+                           Point::new(-1, 0), Point::new(1, 0),
+                           Point::new(-1, 1), Point::new(0, 1), Point::new(1, 1)];
+        
+        offsets.iter().map(|o| self.offset(o)).collect::<Vec<Point>>()
+    }
+
 }
 
 #[derive(Copy)]
