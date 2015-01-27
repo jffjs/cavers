@@ -1,11 +1,10 @@
-extern crate tcod;
-
-use self::tcod::{KeyCode};
-use self::tcod::Key::Special;
 use actor::behavior::Behavior;
 use geom::{Bounds, Point};
 use geom::Contains::{DoesContain, DoesNotContain};
+use input::keyboard::{KeyboardInput, KeyCode};
+use input ::keyboard::Key::{Special};
 
+#[derive(Copy)]
 pub struct Player {
     pub bounds: Bounds
 }
@@ -17,7 +16,7 @@ impl Player {
 }
 
 impl Behavior for Player {
-    fn update(&self, pos: Point, keypress: &tcod::KeyState) -> Point {
+    fn update(&self, pos: Point, keypress: &KeyboardInput) -> Point {
         let mut offset = Point { x: pos.x, y: pos.y };
         offset = match keypress.key {
             Special(KeyCode::Up) => { offset.offset_y(-1) },

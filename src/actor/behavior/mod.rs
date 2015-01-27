@@ -1,9 +1,9 @@
-extern crate tcod;
 use geom::{Point};
+use input::keyboard::KeyboardInput;
 
 pub mod player;
 pub mod wanderer;
 
 pub trait Behavior {
-    fn update(&self, Point, &tcod::KeyState) -> Point;
+    fn update(&self, Point, &KeyboardInput) -> Point;
 }

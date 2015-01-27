@@ -1,6 +1,6 @@
 use std::rand;
 use geom::{Bounds, Point, Contains};
-use terrain::tile::{Tile, TileType};
+use terrain::{Tile, TileType};
 
 pub fn cave(bounds: Bounds, smooth: i32) -> Vec<Vec<Box<Tile>>> {
     let max_x = bounds.max.x + 1;

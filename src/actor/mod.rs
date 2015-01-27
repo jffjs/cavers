@@ -1,8 +1,8 @@
-extern crate tcod;
 use actor::behavior::Behavior;
 use actor::behavior::player::Player;
 use actor::behavior::wanderer::Wanderer;
 use geom::{Bounds, Point};
+use input::keyboard::KeyboardInput;
 use rendering::Color;
 use rendering::renderer::RenderingComponent;
 
@@ -35,7 +35,7 @@ impl<'a> Actor<'a> {
         }
     }
 
-    pub fn update(&mut self, keypress: &tcod::KeyState) {
+    pub fn update(&mut self, keypress: &KeyboardInput) {
         self.position = self.behavior.update(self.position, keypress)
     }
 
@@ -43,3 +43,10 @@ impl<'a> Actor<'a> {
         renderer.render_object_with_color(&self.position, self.glyph, self.color, Color::Black);
     }
 }
+
+// impl<'a> Clone for Actor<'a> {
+//     fn clone(&self) -> Actor<'a> {
+//         let behavior = self.behavior.clone();
+//         Actor { position: self.position, glyph: self.glyph, color: self.color, behavior: behavior }
+//     }
+// }

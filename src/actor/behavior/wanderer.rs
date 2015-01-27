@@ -1,10 +1,9 @@
-extern crate tcod;
-
 use std::rand;
 use std::rand::distributions::{IndependentSample, Range};
 use actor::behavior::Behavior;
 use geom::{Bounds, Point};
 use geom::Contains::{DoesContain, DoesNotContain};
+use input::keyboard::KeyboardInput;
 
 #[derive(Copy)]
 pub struct Wanderer {
@@ -19,7 +18,7 @@ impl Wanderer {
 }
 
 impl Behavior for Wanderer {
-    fn update(&self, pos: Point, keypress: &tcod::KeyState) -> Point {
+    fn update(&self, pos: Point, keypress: &KeyboardInput) -> Point {
         let btwn = Range::new(0,3);
         let mut rng = rand::thread_rng();
         
