@@ -6,6 +6,7 @@ use tcod::{Console, KeyCode};
 use tcod::Key::Special;
 use cavers::actor::Actor;
 use cavers::game::Game;
+use cavers::input::keyboard;
 
 fn main() {
     let mut game = Game::new();
@@ -16,7 +17,7 @@ fn main() {
     game.render(&mobs);
     while !(Console::window_closed() || game.exit) {
         // wait for user input
-        let keypress = Console::wait_for_keypress(true);
+        let keypress = keyboard::wait_for_keypress();
 
         // update game state
         match keypress.key {
