@@ -10,11 +10,13 @@ pub struct Player {
     pub bounds: Bounds
 }
 
-impl Behavior for Player {
-    fn new(bounds: Bounds) -> Player {
+impl Player {
+    pub fn new(bounds: Bounds) -> Player {
         Player { bounds: bounds }
     }
+}
 
+impl Behavior for Player {
     fn update(&self, pos: Point, keypress: &tcod::KeyState) -> Point {
         let mut offset = Point { x: pos.x, y: pos.y };
         offset = match keypress.key {

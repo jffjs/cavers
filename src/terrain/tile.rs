@@ -1,4 +1,4 @@
-use rendering::color::Color;
+use rendering::Color;
 
 #[derive(Copy, PartialEq)]
 pub enum TileType {

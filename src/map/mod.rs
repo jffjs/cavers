@@ -1,6 +1,6 @@
 use geom::{Bounds, Point};
-use rendering::rendering_component::RenderingComponent;
-use rendering::color::Color;
+use rendering::renderer::RenderingComponent;
+use rendering::Color;
 use terrain::tile::Tile;
 
 // TODO: refactor this module to be more about keep track of objects in game world

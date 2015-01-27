@@ -5,18 +5,20 @@ use std::rand::distributions::{IndependentSample, Range};
 use actor::behavior::Behavior;
 use geom::{Bounds, Point};
 use geom::Contains::{DoesContain, DoesNotContain};
-use rendering::rendering_component::RenderingComponent;
 
 #[derive(Copy)]
 pub struct Wanderer {
     pub bounds: Bounds
 }
 
-impl Behavior for Wanderer {
-    fn new(bounds: Bounds) -> Wanderer {
+
+impl Wanderer {
+    pub fn new(bounds: Bounds) -> Wanderer {
         Wanderer { bounds: bounds }
     }
+}
 
+impl Behavior for Wanderer {
     fn update(&self, pos: Point, keypress: &tcod::KeyState) -> Point {
         let btwn = Range::new(0,3);
         let mut rng = rand::thread_rng();
