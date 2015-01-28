@@ -18,6 +18,12 @@ impl<'a> Map<'a> {
 
     pub fn place_actor(&mut self, actor: Box<Actor<'a>>) -> Point {
         let p = actor.position;
+        let x = p.x as usize;
+        let y = p.y as usize;
+        let ref tile = self.tiles[x][y];
+        if tile.solid {
+            // find closest non-solid tile
+        }
         self.actors.push(actor);
         p
     }
@@ -42,27 +48,27 @@ impl<'a> Map<'a> {
     }
 }
 
-pub struct ActorMatrix<'a> {
-    pub matrix: Vec<Vec<Vec<Box<Actor<'a>>>>>,
-    pub x_len: i32,
-    pub y_len: i32
-}
+// pub struct ActorMatrix<'a> {
+//     pub matrix: Vec<Vec<Vec<Box<Actor<'a>>>>>,
+//     pub x_len: i32,
+//     pub y_len: i32
+// }
 
-impl<'a> ActorMatrix<'a> {
-    pub fn new(bounds: Bounds) -> ActorMatrix<'a> {
-        let x_len = bounds.max.x + 1;
-        let y_len = bounds.max.y + 1;
+// impl<'a> ActorMatrix<'a> {
+//     pub fn new(bounds: Bounds) -> ActorMatrix<'a> {
+//         let x_len = bounds.max.x + 1;
+//         let y_len = bounds.max.y + 1;
         
-        let mut matrix: Vec<Vec<Vec<Box<Actor>>>> = vec![];
-        for _ in (0..x_len) {
-            let mut x_vec: Vec<Vec<Box<Actor>>> = vec![];
-            for _ in (0..y_len) {
-                let y_vec: Vec<Box<Actor>> = vec![];
-                x_vec.push(y_vec);
-            }
-            matrix.push(x_vec);
-        }
+//         let mut matrix: Vec<Vec<Vec<Box<Actor>>>> = vec![];
+//         for _ in (0..x_len) {
+//             let mut x_vec: Vec<Vec<Box<Actor>>> = vec![];
+//             for _ in (0..y_len) {
+//                 let y_vec: Vec<Box<Actor>> = vec![];
+//                 x_vec.push(y_vec);
+//             }
+//             matrix.push(x_vec);
+//         }
 
-        ActorMatrix { matrix: matrix, x_len: x_len, y_len: y_len }
-    }
-}
+//         ActorMatrix { matrix: matrix, x_len: x_len, y_len: y_len }
+//     }
+// }
