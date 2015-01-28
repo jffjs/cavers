@@ -3,8 +3,9 @@ use geom::{Bounds, Point};
 use geom::Contains::{DoesContain, DoesNotContain};
 use input::keyboard::{KeyboardInput, KeyCode};
 use input ::keyboard::Key::{Special};
+use map::Map;
 
-#[derive(Copy)]
+#[derive(Copy, Clone)]
 pub struct Player {
     pub bounds: Bounds
 }
@@ -16,7 +17,7 @@ impl Player {
 }
 
 impl Behavior for Player {
-    fn update(&self, pos: Point, keypress: &KeyboardInput) -> Point {
+    fn update(&self, pos: Point, keypress: &KeyboardInput, map: &Box<Map>) -> Point {
         let mut offset = Point { x: pos.x, y: pos.y };
         offset = match keypress.key {
             Special(KeyCode::Up) => { offset.offset_y(-1) },
@@ -26,9 +27,15 @@ impl Behavior for Player {
             _ => { offset }
         };
 
-        match self.bounds.contains(offset) {
+        offset = match self.bounds.contains(offset) {
             DoesContain => { offset }
             DoesNotContain => { pos }
+        };
+
+        if map.get_tile(offset).solid {
+            pos
+        } else {
+            offset
         }
     }
 }

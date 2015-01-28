@@ -4,8 +4,9 @@ use actor::behavior::Behavior;
 use geom::{Bounds, Point};
 use geom::Contains::{DoesContain, DoesNotContain};
 use input::keyboard::KeyboardInput;
+use map::Map;
 
-#[derive(Copy)]
+#[derive(Copy, Clone)]
 pub struct Wanderer {
     pub bounds: Bounds
 }
@@ -18,7 +19,7 @@ impl Wanderer {
 }
 
 impl Behavior for Wanderer {
-    fn update(&self, pos: Point, keypress: &KeyboardInput) -> Point {
+    fn update(&self, pos: Point, keypress: &KeyboardInput, map: &Box<Map>) -> Point {
         let btwn = Range::new(0,3);
         let mut rng = rand::thread_rng();
         
@@ -35,6 +36,10 @@ impl Behavior for Wanderer {
             DoesNotContain => { return pos; }
         }
 
-        offset
+        if map.get_tile(offset).solid {
+            pos
+        } else {
+            offset
+        }
     }
 }
