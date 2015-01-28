@@ -1,9 +1,9 @@
 use actor::Actor;
 use geom::{Bounds, Point};
+use geom::Contains::{DoesContain, DoesNotContain};
 use rendering::renderer::RenderingComponent;
 use terrain::Tile;
 
-// TODO: refactor this module to be more about keep track of objects in game world
 pub struct Map<'a> {
     pub bounds: Bounds,
     pub tiles: Vec<Vec<Box<Tile>>>,
@@ -13,19 +13,58 @@ pub struct Map<'a> {
 
 impl<'a> Map<'a> {
     pub fn new(bounds: Bounds, tiles: Vec<Vec<Box<Tile>>>, player: Box<Actor<'a>>) -> Map<'a> {
-        Map { bounds: bounds, tiles: tiles, actors: vec![], player: player }
+        let mut map = Map { bounds: bounds, tiles: tiles, actors: vec![], player: player };
+        map.place_player();
+        map
     }
 
-    pub fn place_actor(&mut self, actor: Box<Actor<'a>>) -> Point {
+    fn find_empty_tile(&self, pos: &Point, tile: &Tile) -> Point {
+        if !(tile.solid) {
+            return Point { x: pos.x, y: pos.y };
+        } else {
+            let mut search_q = pos.adjacent();
+            while search_q.len() > 0 {
+                let p = search_q[0];
+                let px = p.x as usize;
+                let py = p.y as usize;
+                let ref t = self.tiles[px][py];
+                // println!("tile: {}, solid: {}, x: {}, y: {}", t.glyph, t.solid, px, py);
+                
+                if !(t.solid) {
+                    // found it!
+                    match self.bounds.contains(p) {
+                        DoesContain => { return p; },
+                        DoesNotContain => { }
+                    }
+                }
+                search_q.remove(0);
+
+                // not found, add this points adjecent points to search queue
+                search_q.append(&mut p.adjacent());
+            }
+            // TODO: what if we can't find an empty tile??
+            Point { x: pos.x, y: pos.y }
+        }
+    }
+
+    fn place_player(&mut self) {
+        let p = self.player.position;
+        let x = p.x as usize;
+        let y = p.y as usize;
+        let tile = *self.tiles[x][y];
+        let player_pos = self.find_empty_tile(&p, &tile);
+        self.player.position = player_pos;
+    }
+
+    pub fn place_actor(&mut self, mut actor: Box<Actor<'a>>) -> Point {
         let p = actor.position;
         let x = p.x as usize;
         let y = p.y as usize;
-        let ref tile = self.tiles[x][y];
-        if tile.solid {
-            // find closest non-solid tile
-        }
+        let tile = *self.tiles[x][y];
+        let new_actor_pos = self.find_empty_tile(&p, &tile);
+        actor.position = new_actor_pos;
         self.actors.push(actor);
-        p
+        new_actor_pos
     }
 
     pub fn render(&self, renderer: &mut Box<RenderingComponent>) {
