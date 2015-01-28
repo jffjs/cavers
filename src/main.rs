@@ -28,5 +28,4 @@ fn main() {
     }
 }
 
-// TODO: make map scrollable
 // TODO: composable behaviors
