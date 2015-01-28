@@ -38,11 +38,14 @@ impl<'a> Actor<'a> {
         }
     }
 
-    pub fn update(&mut self, keypress: &KeyboardInput, map: &Box<Map>) {
+    pub fn update(&mut self, keypress: &KeyboardInput, map: &mut Box<Map>) {
         self.position = self.behavior.update(self.position, keypress, map)
     }
 
-    pub fn render(&self, renderer: &mut Box<RenderingComponent>) {
-        renderer.render_object_with_color(&self.position, self.glyph, self.color, Color::Black);
+    pub fn render(&self, view_origin: Point, renderer: &mut Box<RenderingComponent>) {
+        let position = Point { x: self.position.x - view_origin.x, y: self.position.y - view_origin.y };
+        if position.x >= 0 && position.y >= 0 {
+            renderer.render_object_with_color(&position, self.glyph, self.color, Color::Black);
+        }
     }
 }

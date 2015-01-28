@@ -6,5 +6,5 @@ pub mod player;
 pub mod wanderer;
 
 pub trait Behavior {
-    fn update(&self, Point, &KeyboardInput, &Box<Map>) -> Point;
+    fn update(&self, Point, &KeyboardInput, &mut Box<Map>) -> Point;
 }

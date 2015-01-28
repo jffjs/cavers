@@ -19,7 +19,7 @@ impl Wanderer {
 }
 
 impl Behavior for Wanderer {
-    fn update(&self, pos: Point, keypress: &KeyboardInput, map: &Box<Map>) -> Point {
+    fn update(&self, pos: Point, keypress: &KeyboardInput, map: &mut Box<Map>) -> Point {
         let btwn = Range::new(0,3);
         let mut rng = rand::thread_rng();
         

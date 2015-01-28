@@ -8,6 +8,8 @@ pub trait RenderingComponent {
     fn render_object(&mut self, &Point, char);
     fn render_object_with_color(&mut self, &Point, char, Color, Color);
     fn after_render_new_frame(&mut self);
+    fn screen_width(&self) -> i32;
+    fn screen_height(&self) -> i32;
 }
 
 pub struct TcodRenderingComponent {
@@ -38,5 +40,13 @@ impl RenderingComponent for TcodRenderingComponent {
 
     fn after_render_new_frame(&mut self) {
         Console::flush();
+    }
+
+    fn screen_width(&self) -> i32 {
+        self.console.width()
+    }
+
+    fn screen_height(&self) -> i32 {
+        self.console.height()
     }
 }

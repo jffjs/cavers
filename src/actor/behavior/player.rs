@@ -17,13 +17,21 @@ impl Player {
 }
 
 impl Behavior for Player {
-    fn update(&self, pos: Point, keypress: &KeyboardInput, map: &Box<Map>) -> Point {
+    fn update(&self, pos: Point, keypress: &KeyboardInput, map: &mut Box<Map>) -> Point {
         let mut offset = Point { x: pos.x, y: pos.y };
         offset = match keypress.key {
-            Special(KeyCode::Up) => { offset.offset_y(-1) },
-            Special(KeyCode::Down) => { offset.offset_y(1) },
-            Special(KeyCode::Left) => { offset.offset_x(-1) },
-            Special(KeyCode::Right) => { offset.offset_x(1) },
+            Special(KeyCode::Up) => {
+                offset.offset_y(-1)
+            },
+            Special(KeyCode::Down) => {
+                offset.offset_y(1)
+            },
+            Special(KeyCode::Left) => {
+                offset.offset_x(-1)
+            },
+            Special(KeyCode::Right) => {
+                offset.offset_x(1)
+            },
             _ => { offset }
         };
 
