@@ -9,6 +9,7 @@ pub enum Color {
     Black,
     Grey,
     LightGrey,
+    Green,
     Red,
     White,
 }
@@ -21,6 +22,7 @@ impl Color {
             Color::Black => { tcod::colors::black },
             Color::Grey => { tcod::colors::grey },
             Color::LightGrey => { tcod::colors::light_grey },
+            Color::Green => { tcod::colors::green },
             Color::Red => { tcod::colors::red },
             Color::White => { tcod::colors::white }
         }

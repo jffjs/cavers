@@ -29,3 +29,6 @@ fn main() {
 }
 
 // TODO: composable behaviors
+// TODO: game states
+// TODO: windows/panels
+// TODO: combat
