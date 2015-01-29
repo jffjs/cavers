@@ -1,7 +1,9 @@
+use std::cell::{RefMut, RefCell};
 use actor::behavior::Behavior;
 use actor::behavior::player::Player;
 use actor::behavior::wanderer::Wanderer;
 use actor::behavior::spawner::Spawner;
+use game::Game;
 use geom::{Point};
 use input::keyboard::KeyboardInput;
 use map::Map;
@@ -16,6 +18,7 @@ pub enum ActorType {
     Ichor,
     Player
 }
+
 pub struct Actor<'a> {
     pub position: Point,
     pub glyph: char,

@@ -1,7 +1,8 @@
 extern crate tcod;
 
 use self::tcod::{Console};
-use actor::Actor;
+use actor::{Actor, ActorType};
+use actor::behavior::{Action, Actions};
 use geom::{Bounds, Point};
 use input::keyboard::KeyboardInput;
 use map::Map;
@@ -30,13 +31,15 @@ impl<'a> Game<'a> {
             max: Point {x: 199, y: 199 }
         };
 
-        let center = Point { x: 40, y: 25 };
         let console = Console::init_root(window_bounds.max.x + 1, window_bounds.max.y + 1, "cavers", false);
         let rc: Box<TcodRenderingComponent> = box TcodRenderingComponent::new(console);
-        let map = box Map::new(map_bounds, window_bounds, center, terrain::random::cave(map_bounds, 4));
+
+        // move this out of Game into main? Add actors to map?
+        let map = box Map::new(map_bounds, window_bounds, terrain::random::cave(map_bounds, 4));
         let c = box Actor::player(40, 25, &map);
         let d = box Actor::dog(10, 10, &map);
         let actors = vec![d];
+        // let actors: Vec<Box<Actor>> = vec![];
 
         Game {
             exit: false,

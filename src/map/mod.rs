@@ -14,7 +14,7 @@ pub struct Map<'a> {
 }
 
 impl<'a> Map<'a> {
-    pub fn new(bounds: Bounds, window_bounds: Bounds, center: Point, tiles: Vec<Vec<Box<Tile>>>) -> Map<'a> {
+    pub fn new(bounds: Bounds, window_bounds: Bounds, tiles: Vec<Vec<Box<Tile>>>) -> Map<'a> {
         Map { bounds: bounds, window_bounds: window_bounds, view_origin: Point { x: 0, y: 0}, tiles: tiles }
     }
 
