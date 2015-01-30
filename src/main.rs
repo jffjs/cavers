@@ -1,7 +1,9 @@
 #![feature(box_syntax)]
+extern crate core;
 extern crate tcod;
 extern crate cavers;
 
+use core::ops::DerefMut;
 use tcod::{Console};
 use cavers::game::Game;
 use cavers::input::keyboard;
@@ -21,6 +23,8 @@ fn main() {
             Special(KeyCode::Escape) => game.exit = true,
             _ => {}
         }
+
+        game.move_info.borrow_mut().deref_mut().last_keypress = Some(keypress);
         game.update(&keypress);
 
         // render
@@ -28,7 +32,6 @@ fn main() {
     }
 }
 
-// TODO: composable behaviors
 // TODO: game states
 // TODO: windows/panels
 // TODO: combat
