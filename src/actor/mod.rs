@@ -1,8 +1,9 @@
-use std::cell::{RefMut, RefCell};
+use std::cell::RefCell;
+use std::rc::Rc;
 use actor::behavior::{Action,Behavior};
 use actor::behavior::player::Player;
 use actor::behavior::wanderer::Wanderer;
-use game::Game;
+use game::{Game, MoveInfo};
 use geom::{Point};
 use input::keyboard::KeyboardInput;
 use map::Map;
@@ -53,8 +54,8 @@ impl<'a> Actor<'a> {
         }
     }
 
-    pub fn update(&mut self, keypress: &KeyboardInput, map: &mut Box<Map>) {
-        self.position = self.behavior.update(self.position, keypress, map);
+    pub fn update(&mut self, move_info: Rc<RefCell<MoveInfo>>, map: &mut Box<Map>) {
+        self.position = self.behavior.update(self.position, move_info, map);
     }
 
     pub fn render(&self, view_origin: Point, renderer: &mut Box<RenderingComponent>) {

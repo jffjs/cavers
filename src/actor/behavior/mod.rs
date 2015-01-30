@@ -1,4 +1,7 @@
+use std::cell::RefCell;
+use std::rc::Rc;
 use actor::{Actor, ActorType};
+use game::MoveInfo;
 use geom::{Point};
 use input::keyboard::KeyboardInput;
 use map::Map;
@@ -7,7 +10,7 @@ pub mod player;
 pub mod wanderer;
 
 pub trait Behavior {
-    fn update(&self, Point, &KeyboardInput, &mut Box<Map>) -> Point;
+    fn update(&self, Point, Rc<RefCell<MoveInfo>>, &mut Box<Map>) -> Point;
 }
 
 #[derive(Copy)]

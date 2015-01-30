@@ -1,4 +1,5 @@
 #![feature(box_syntax)]
+extern crate core;
 
 pub mod actor;
 pub mod geom;

@@ -25,7 +25,7 @@ fn main() {
         }
 
         game.move_info.borrow_mut().deref_mut().last_keypress = Some(keypress);
-        game.update(&keypress);
+        game.update();
 
         // render
         game.render();

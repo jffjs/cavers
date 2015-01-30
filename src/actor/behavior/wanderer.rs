@@ -1,6 +1,9 @@
+use std::cell::RefCell;
+use std::rc::Rc;
 use std::rand;
 use std::rand::distributions::{IndependentSample, Range};
 use actor::behavior::Behavior;
+use game::MoveInfo;
 use geom::{Bounds, Point};
 use geom::Contains::{DoesContain, DoesNotContain};
 use input::keyboard::KeyboardInput;
@@ -19,7 +22,7 @@ impl Wanderer {
 }
 
 impl Behavior for Wanderer {
-    fn update(&self, pos: Point, keypress: &KeyboardInput, map: &mut Box<Map>) -> Point {
+    fn update(&self, pos: Point, move_info: Rc<RefCell<MoveInfo>>, map: &mut Box<Map>) -> Point {
         let btwn = Range::new(0,3);
         let mut rng = rand::thread_rng();
         

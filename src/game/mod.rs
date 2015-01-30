@@ -12,6 +12,7 @@ use terrain;
 use rendering::renderer::RenderingComponent;
 use rendering::renderer::TcodRenderingComponent;
 
+#[derive(Copy)]
 pub struct MoveInfo {
     pub last_keypress: Option<KeyboardInput>,
     pub player_pos: Point,
@@ -78,10 +79,10 @@ impl<'a> Game<'a> {
         self.rendering_component.after_render_new_frame();
     }
 
-    pub fn update(&mut self, keypress: &KeyboardInput) {
-        self.player.update(keypress, &mut self.map);
+    pub fn update(&mut self) {
+        self.player.update(self.move_info.clone(), &mut self.map);
         for i in self.actors.iter_mut() {
-            i.update(keypress, &mut self.map);
+            i.update(self.move_info.clone(), &mut self.map);
         }
     }
 }
