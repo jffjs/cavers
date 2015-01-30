@@ -41,5 +41,6 @@ impl Behavior for Wanderer {
         } else {
             offset
         }
+
     }
 }

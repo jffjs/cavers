@@ -1,5 +1,7 @@
 extern crate tcod;
 
+use std::cell::RefCell;
+use std::rc::Rc;
 use self::tcod::{Console};
 use actor::{Actor, ActorType};
 use actor::behavior::{Action, Actions};
@@ -10,7 +12,20 @@ use terrain;
 use rendering::renderer::RenderingComponent;
 use rendering::renderer::TcodRenderingComponent;
 
+pub struct MoveInfo {
+    pub last_keypress: Option<KeyboardInput>,
+    pub player_pos: Point,
+    pub bounds: Bounds
+}
+
+impl MoveInfo {
+    pub fn new(bounds: Bounds, player_pos: Point) -> MoveInfo {
+        MoveInfo{ last_keypress: None, bounds: bounds, player_pos: player_pos }
+    }
+}
+
 pub struct Game<'a> {
+    pub move_info: Rc<RefCell<MoveInfo>>,
     pub exit: bool,
     pub window_bounds: Bounds,
     pub rendering_component: Box<RenderingComponent + 'a>,
@@ -41,7 +56,9 @@ impl<'a> Game<'a> {
         let actors = vec![d];
         // let actors: Vec<Box<Actor>> = vec![];
 
+        let move_info = Rc::new(RefCell::new(MoveInfo::new(map_bounds, c.position)));
         Game {
+            move_info: move_info,
             exit: false,
             window_bounds: window_bounds,
             rendering_component: rc,
