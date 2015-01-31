@@ -6,20 +6,10 @@ use actor::behavior::Behavior;
 use game::MoveInfo;
 use geom::{Bounds, Point};
 use geom::Contains::{DoesContain, DoesNotContain};
-use input::keyboard::KeyboardInput;
 use map::Map;
 
 #[derive(Copy, Clone)]
-pub struct Wanderer {
-    pub bounds: Bounds
-}
-
-
-impl Wanderer {
-    pub fn new(bounds: Bounds) -> Wanderer {
-        Wanderer { bounds: bounds }
-    }
-}
+pub struct Wanderer;
 
 impl Behavior for Wanderer {
     fn update(&self, pos: Point, move_info: Rc<RefCell<MoveInfo>>, map: &mut Box<Map>) -> Point {
@@ -28,13 +18,13 @@ impl Behavior for Wanderer {
         
         let mut offset = Point { x: pos.x, y: pos.y };
         let offset_x = btwn.ind_sample(&mut rng) - 1;
-        match self.bounds.contains(offset.offset_x(offset_x)) {
+        match map.bounds.contains(offset.offset_x(offset_x)) {
             DoesContain => offset = offset.offset_x(offset_x),
             DoesNotContain => { return pos; }
         }
 
         let offset_y = btwn.ind_sample(&mut rng) - 1;
-        match self.bounds.contains(offset.offset_y(offset_y)) {
+        match map.bounds.contains(offset.offset_y(offset_y)) {
             DoesContain => offset = offset.offset_y(offset_y),
             DoesNotContain => { return pos; }
         }

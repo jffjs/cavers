@@ -1,4 +1,5 @@
 use geom::Contains::{DoesContain, DoesNotContain};
+use core::num::Float;
 
 #[derive(Copy, Clone)]
 pub struct Point {
@@ -11,6 +12,14 @@ impl Point {
         Point {x: x, y: y }
     }
 
+    pub fn distance_to(&self, p: Point) -> f32 {
+        let x1 = self.x as f32;
+        let y1 = self.y as f32;
+        let x2 = p.x as f32;
+        let y2 = p.y as f32;
+        let tmp = (x2-x1) * (x2-x1) + (y2-y1) * (y2-y1);
+        tmp.sqrt()
+    }
     pub fn offset_x(&self, offset: i32) -> Point {
         Point { x: self.x + offset, y: self.y }
     }

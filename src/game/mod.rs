@@ -4,7 +4,6 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use self::tcod::{Console};
 use actor::{Actor, ActorType};
-use actor::behavior::{Action, Actions};
 use geom::{Bounds, Point};
 use input::keyboard::KeyboardInput;
 use map::Map;
@@ -54,7 +53,8 @@ impl<'a> Game<'a> {
         let map = box Map::new(map_bounds, window_bounds, terrain::random::cave(map_bounds, 4));
         let c = box Actor::player(40, 25, &map);
         let d = box Actor::dog(10, 10, &map);
-        let actors = vec![d];
+        let k = box Actor::kobold(20, 20, &map);
+        let actors = vec![d, k];
         // let actors: Vec<Box<Actor>> = vec![];
 
         let move_info = Rc::new(RefCell::new(MoveInfo::new(map_bounds, c.position)));

@@ -10,15 +10,7 @@ use input ::keyboard::Key::{Special};
 use map::Map;
 
 #[derive(Copy, Clone)]
-pub struct Player {
-    pub bounds: Bounds
-}
-
-impl Player {
-    pub fn new(bounds: Bounds) -> Player {
-        Player { bounds: bounds }
-    }
-}
+pub struct Player;
 
 impl Behavior for Player {
     fn update(&self, pos: Point, move_info: Rc<RefCell<MoveInfo>>, map: &mut Box<Map>) -> Point {
@@ -44,7 +36,7 @@ impl Behavior for Player {
             _ => { offset }
         };
 
-        offset = match self.bounds.contains(offset) {
+        offset = match map.bounds.contains(offset) {
             DoesContain => { offset }
             DoesNotContain => { pos }
         };

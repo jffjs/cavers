@@ -1,11 +1,11 @@
 use std::cell::RefCell;
 use std::rc::Rc;
-use actor::behavior::{Action,Behavior};
+use actor::behavior::Behavior;
+use actor::behavior::aggro::Aggro;
 use actor::behavior::player::Player;
 use actor::behavior::wanderer::Wanderer;
-use game::{Game, MoveInfo};
+use game:: MoveInfo;
 use geom::{Point};
-use input::keyboard::KeyboardInput;
 use map::Map;
 use rendering::Color;
 use rendering::renderer::RenderingComponent;
@@ -34,15 +34,20 @@ impl<'a> Actor<'a> {
     }
 
     pub fn player(x: i32, y: i32, map: &Box<Map>) -> Actor<'a> {
-        let behavior: Box<Behavior> = box Player::new(map.bounds);
+        let behavior: Box<Behavior> = box Player;
         let position = map.find_empty_tile(Point{ x: x, y: y });
         Actor::new(position.x, position.y, '@', Color::White, behavior)
     }
 
     pub fn dog(x: i32, y: i32, map: &Box<Map>) -> Actor<'a> {
-        let behavior: Box<Behavior> = box Wanderer::new(map.bounds);
+        let behavior: Box<Behavior> = box Wanderer;
         let position = map.find_empty_tile(Point{ x: x, y: y });
         Actor::new(position.x, position.y, 'd', Color::DarkAmber, behavior)
+    }
+
+    pub fn kobold(x: i32, y: i32, map: &Box<Map>) -> Actor<'a> {
+        let pos = map.find_empty_tile(Point { x: x, y: y });
+        Actor::new(pos.x, pos.y, 'k', Color::Green, box Aggro as Box<Behavior>)
     }
 
     pub fn new(x: i32, y: i32, glyph: char, color: Color, behavior: Box<Behavior + 'a>) -> Actor<'a> {
