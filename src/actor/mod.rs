@@ -46,8 +46,9 @@ impl<'a> Actor<'a> {
     }
 
     pub fn kobold(x: i32, y: i32, map: &Box<Map>) -> Actor<'a> {
+        let behavior: Box<Behavior> = box Aggro { radius: 10f32 };
         let pos = map.find_empty_tile(Point { x: x, y: y });
-        Actor::new(pos.x, pos.y, 'k', Color::Green, box Aggro as Box<Behavior>)
+        Actor::new(pos.x, pos.y, 'k', Color::DarkerGreen, behavior)
     }
 
     pub fn new(x: i32, y: i32, glyph: char, color: Color, behavior: Box<Behavior + 'a>) -> Actor<'a> {

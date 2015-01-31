@@ -55,6 +55,21 @@ pub struct Bounds {
 }
 
 impl Bounds {
+    pub fn new(min_x: i32, min_y: i32, max_x: i32, max_y: i32) -> Bounds {
+        Bounds {
+            min: Point::new(min_x, min_y),
+            max: Point::new(max_x, max_y)
+        }
+    }
+
+    pub fn width(&self) -> i32 {
+        self.max.x - self.min.x + 1
+    }
+
+    pub fn height(&self) -> i32 {
+        self.max.y - self.min.y + 1
+    }
+
     pub fn contains(&self, point: Point) -> Contains {
         if
             point.x >= self.min.x &&

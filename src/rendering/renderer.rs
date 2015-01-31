@@ -1,9 +1,11 @@
 extern crate tcod;
-use self::tcod::{Console, BackgroundFlag};
+use self::tcod::{Console, BackgroundFlag, TextAlignment};
 use geom::{Point};
 use rendering::Color;
+use rendering::window::Window;
 
 pub trait RenderingComponent {
+    fn attach_window(&mut self, &mut Box<Window>);
     fn before_render_new_frame(&mut self);
     fn render_object(&mut self, &Point, char);
     fn render_object_with_color(&mut self, &Point, char, Color, Color);
@@ -26,6 +28,20 @@ impl TcodRenderingComponent {
 }
 
 impl RenderingComponent for TcodRenderingComponent {
+    fn attach_window(&mut self, window: &mut Box<Window>) {
+        window.clear();
+        window.print_message(0, 0, TextAlignment::Left, "Hello, world!");
+        let bounds = window.get_bounds();
+        let console = window.get_console();
+        println!("{}, {}", bounds.min.x, bounds.min.y);
+        Console::blit(&*console,
+                      0, 0,
+                      bounds.width(), bounds.height(),
+                      &mut self.console,
+                      bounds.min.x, bounds.min.y,
+                      1f32, 1f32);
+    }
+
     fn before_render_new_frame(&mut self) {
         self.console.clear();
     }

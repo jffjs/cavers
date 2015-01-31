@@ -1,6 +1,7 @@
 extern crate tcod;
 
 pub mod renderer;
+pub mod window;
 
 #[derive(Copy)]
 pub enum Color {
@@ -10,6 +11,8 @@ pub enum Color {
     Grey,
     LightGrey,
     Green,
+    DarkGreen,
+    DarkerGreen,
     Red,
     White,
 }
@@ -23,6 +26,8 @@ impl Color {
             Color::Grey => { tcod::colors::grey },
             Color::LightGrey => { tcod::colors::light_grey },
             Color::Green => { tcod::colors::green },
+            Color::DarkGreen => { tcod::colors::dark_green },
+            Color::DarkerGreen => { tcod::colors::darker_green },
             Color::Red => { tcod::colors::red },
             Color::White => { tcod::colors::white }
         }

@@ -3,13 +3,14 @@ extern crate tcod;
 use std::cell::RefCell;
 use std::rc::Rc;
 use self::tcod::{Console};
-use actor::{Actor, ActorType};
+use actor::Actor;
 use geom::{Bounds, Point};
 use input::keyboard::KeyboardInput;
 use map::Map;
 use terrain;
 use rendering::renderer::RenderingComponent;
 use rendering::renderer::TcodRenderingComponent;
+use rendering::window::Window;
 
 #[derive(Copy)]
 pub struct MoveInfo {
@@ -29,6 +30,8 @@ pub struct Game<'a> {
     pub exit: bool,
     pub window_bounds: Bounds,
     pub rendering_component: Box<RenderingComponent + 'a>,
+    pub menu_window: Box<Window>,
+    pub map_window: Box<Window>,
     pub map: Box<Map<'a>>,
     pub player: Box<Actor<'a>>,
     pub actors: Vec<Box<Actor<'a>>>
@@ -36,20 +39,14 @@ pub struct Game<'a> {
 
 impl<'a> Game<'a> {
     pub fn new() -> Game<'a> {
-        let window_bounds = Bounds {
-            min: Point { x: 0, y: 0 },
-            max: Point { x: 79, y: 49 }
-        };
-
-        let map_bounds = Bounds {
-            min: Point {x: 0, y: 0},
-            max: Point {x: 199, y: 199 }
-        };
-
+        let window_bounds = Bounds::new(0, 0, 79, 49);
+        let map_bounds = Bounds::new(0, 0, 199, 199);
+        let map_window_bounds = Bounds::new(0, 0, 59, 49);
+        let menu_window_bounds = Bounds::new(60, 0, 79, 49);
         let console = Console::init_root(window_bounds.max.x + 1, window_bounds.max.y + 1, "cavers", false);
+        let menu_window = box Window::new(menu_window_bounds);
+        let map_window = box Window::new(map_window_bounds);
         let rc: Box<TcodRenderingComponent> = box TcodRenderingComponent::new(console);
-
-        // move this out of Game into main? Add actors to map?
         let map = box Map::new(map_bounds, window_bounds, terrain::random::cave(map_bounds, 4));
         let c = box Actor::player(40, 25, &map);
         let d = box Actor::dog(10, 10, &map);
@@ -63,6 +60,8 @@ impl<'a> Game<'a> {
             exit: false,
             window_bounds: window_bounds,
             rendering_component: rc,
+            menu_window: menu_window,
+            map_window: map_window,
             map: map,
             player: c,
             actors: actors
@@ -71,7 +70,9 @@ impl<'a> Game<'a> {
 
     pub fn render(&mut self) {
         self.rendering_component.before_render_new_frame();
+        // self.rendering_component.attach_window(&mut self.map_window);
         self.map.render(self.player.position, &mut self.rendering_component);
+        self.rendering_component.attach_window(&mut self.menu_window);
         for a in self.actors.iter() {
             a.render(self.map.view_origin, &mut self.rendering_component);
         }
