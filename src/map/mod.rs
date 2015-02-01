@@ -19,27 +19,18 @@ impl<'a> Map<'a> {
     }
 
     pub fn scroll_x(&self, center: Point) -> i32 {
-        let screen_width = self.window_bounds.max.x + 1 as i32;
-        let world_width = self.bounds.max.x + 1 as i32;
+        let screen_width = self.window_bounds.width();
+        let world_width = self.bounds.width();
         let center_x = center.x as i32;
         cmp::max(0, cmp::min(center_x - screen_width / 2, world_width - screen_width))
     }
 
     pub fn scroll_y(&self, center: Point) -> i32 {
-        let screen_height = self.window_bounds.max.y + 1 as i32;
-        let world_height = self.bounds.max.y + 1 as i32;
+        let screen_height = self.window_bounds.height();
+        let world_height = self.bounds.height();
         let center_y = center.y as i32;
         cmp::max(0, cmp::min(center_y - screen_height / 2, world_height - screen_height))
     }
-
-    // pub fn scroll_by(&mut self, offset: Point) {
-    //     let world_width = self.bounds.max.x + 1 as i32;
-    //     let world_height = self.bounds.max.y + 1 as i32;
-    //     self.view_center = Point {
-    //         x: cmp::max(0, cmp::min(self.view_center.x + offset.x, world_width - 1)),
-    //         y: cmp::max(0, cmp::min(self.view_center.y + offset.y, world_height -1))
-    //     };
-    // }
 
     pub fn get_tile(&self, p: Point) -> Tile {
         let x = p.x as usize;
@@ -65,7 +56,6 @@ impl<'a> Map<'a> {
                 let px = p.x as usize;
                 let py = p.y as usize;
                 let ref t = self.tiles[px][py];
-                // println!("tile: {}, solid: {}, x: {}, y: {}", t.glyph, t.solid, px, py);
                 
                 if !(t.solid) {
                     // found it!
@@ -88,8 +78,8 @@ impl<'a> Map<'a> {
         let start_x = self.scroll_x(center);
         let start_y = self.scroll_y(center);
         self.view_origin = Point { x: start_x, y: start_y };
-        for x in (0..renderer.screen_width()) {
-            for y in (0..renderer.screen_height()) {
+        for x in (0..self.window_bounds.width()) {
+            for y in (0..self.window_bounds.height()) {
                 let tx = x + start_x;
                 let ty = y + start_y;
                 let tile = self.get_tile(Point { x: tx, y: ty });

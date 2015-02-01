@@ -33,5 +33,5 @@ fn main() {
 }
 
 // TODO: game states
-// TODO: windows/panels
+// TODO: displaying appropiate content in windows for state
 // TODO: combat
