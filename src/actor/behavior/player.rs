@@ -42,8 +42,7 @@ impl Behavior for Player {
         };
 
         if map.get_tile(offset).solid {
-            // pos
-            offset
+            pos
         } else {
             move_info.borrow_mut().deref_mut().player_pos = offset;
             offset

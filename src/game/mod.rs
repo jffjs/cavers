@@ -4,7 +4,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use self::tcod::{Console};
 use actor::Actor;
-use game::state::{GameState, MovementState};
+use game::state::{State, GameState, MovementState};
 use geom::{Bounds, Point};
 use input::keyboard::KeyboardInput;
 use map::Map;
@@ -59,7 +59,7 @@ impl<'a> Game<'a> {
         let d = box Actor::dog(10, 10, &map);
         let k = box Actor::kobold(20, 20, &map);
         let actors = vec![d, k];
-        let gs: Box<GameState> = box MovementState::new();
+        let gs: Box<GameState> = box MovementState;
 
         let move_info = Rc::new(RefCell::new(MoveInfo::new(map_bounds, c.position)));
         Game {
@@ -78,22 +78,15 @@ impl<'a> Game<'a> {
     }
 
     pub fn render(&mut self) {
-        self.rendering_component.before_render_new_frame();
-        // self.rendering_component.attach_window(&mut self.map_window);
-        self.map.render(self.player.position, &mut self.rendering_component);
-        self.rendering_component.attach_window(&mut self.menu_window);
-        self.rendering_component.attach_window(&mut self.msg_window);
-        for a in self.actors.iter() {
-            a.render(self.map.view_origin, &mut self.rendering_component);
-        }
-        self.player.render(self.map.view_origin, &mut self.rendering_component);
-        self.rendering_component.after_render_new_frame();
+        let mut windows = vec![&mut self.menu_window, &mut self.msg_window];
+        self.game_state.render(&mut self.rendering_component, &self.actors, &self.player, &mut windows, &mut self.map );
     }
 
     pub fn update(&mut self) {
-        self.player.update(self.move_info.clone(), &mut self.map);
-        for i in self.actors.iter_mut() {
-            i.update(self.move_info.clone(), &mut self.map);
+        let next_state = self.game_state.update(&mut self.actors, &mut self.player, &mut self.map, self.move_info.clone());
+        match next_state {
+            State::Movement => self.game_state = box MovementState,
+            _ => self.game_state = box MovementState
         }
     }
 }
