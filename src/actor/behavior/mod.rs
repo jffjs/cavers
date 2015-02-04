@@ -11,7 +11,7 @@ pub mod wanderer;
 pub mod aggro;
 
 pub trait Behavior {
-    fn update(&self, Point, Rc<RefCell<MoveInfo>>, &mut Box<Map>) -> Point;
+    fn update(&self, Point, Rc<RefCell<MoveInfo>>, Rc<Map>) -> Point;
 }
 
 #[derive(Copy)]

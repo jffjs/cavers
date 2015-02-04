@@ -13,7 +13,7 @@ use map::Map;
 pub struct Player;
 
 impl Behavior for Player {
-    fn update(&self, pos: Point, move_info: Rc<RefCell<MoveInfo>>, map: &mut Box<Map>) -> Point {
+    fn update(&self, pos: Point, move_info: Rc<RefCell<MoveInfo>>, map: Rc<Map>) -> Point {
         let keypress = match move_info.borrow().deref().last_keypress {
             Some(k) => { k },
             None => { KeyboardInput { key: Special(KeyCode::None) }  }

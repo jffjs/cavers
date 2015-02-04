@@ -24,7 +24,6 @@ impl TcodRenderingComponent {
             console: console
         }
     }
-
 }
 
 impl RenderingComponent for TcodRenderingComponent {

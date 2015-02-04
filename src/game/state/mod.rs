@@ -1,3 +1,4 @@
+use core::ops::Deref;
 use std::cell::RefCell;
 use std::rc::Rc;
 use actor::Actor;
@@ -13,37 +14,41 @@ pub enum State {
 }
 
 pub trait GameState {
-    fn update(&mut self, &mut Vec<Box<Actor>>, &mut Box<Actor>, &mut Box<Map>, Rc<RefCell<MoveInfo>>) -> State;
-    fn render(&mut self, &mut Box<RenderingComponent>, &Vec<Box<Actor>>, &Box<Actor>, &mut Vec<&mut Box<Window>>, &mut Box<Map>);
+    fn update(&mut self, &mut Vec<Box<Actor>>, &mut Box<Actor>) -> State;
+    fn render(&self, &mut Box<RenderingComponent>, &Vec<Box<Actor>>, &Box<Actor>, &mut Vec<&mut Box<Window>>);
 }
 
-pub struct MovementState;
+pub struct MovementState<'a> {
+    pub map: Rc<Map<'a>>,
+    pub move_info: Rc<RefCell<MoveInfo>>
+}
 
-impl MovementState {
-    pub fn new() -> MovementState {
-        MovementState
+
+impl<'a> MovementState<'a> {
+    pub fn new(map: Rc<Map>, move_info: Rc<RefCell<MoveInfo>>) -> MovementState {
+        MovementState { map: map, move_info: move_info }
     }
 }
 
-impl GameState for MovementState {
-    fn update(&mut self, mobs: &mut Vec<Box<Actor>>, player: &mut Box<Actor>, map: &mut Box<Map>, move_info: Rc<RefCell<MoveInfo>>) -> State {
-        player.update(move_info.clone(), map);
+impl<'a> GameState for MovementState<'a> {
+    fn update(&mut self, mobs: &mut Vec<Box<Actor>>, player: &mut Box<Actor>) -> State {
+        player.update(self.move_info.clone(), self.map.clone());
         for i in mobs.iter_mut() {
-            i.update(move_info.clone(), map);
+            i.update(self.move_info.clone(), self.map.clone());
         }
         State::Movement
     }
 
-    fn render(&mut self, renderer: &mut Box<RenderingComponent>, mobs: &Vec<Box<Actor>>, player: &Box<Actor>, windows: &mut Vec<&mut Box<Window>>, map: &mut Box<Map>) {
+    fn render(&self, renderer: &mut Box<RenderingComponent>, mobs: &Vec<Box<Actor>>, player: &Box<Actor>, windows: &mut Vec<&mut Box<Window>>) {
         renderer.before_render_new_frame();
-        map.render(player.position, renderer);
+        self.map.render(self.move_info.clone(), renderer);
         for w in windows.iter_mut() {
             renderer.attach_window(*w);
         }
         for m in mobs.iter() {
-            m.render(map.view_origin, renderer);
+            m.render(self.move_info.borrow().deref().view_origin, renderer);
         }
-        player.render(map.view_origin, renderer);
+        player.render(self.move_info.borrow().deref().view_origin, renderer);
         renderer.after_render_new_frame();
     }
 }

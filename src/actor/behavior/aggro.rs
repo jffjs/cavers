@@ -14,7 +14,7 @@ pub struct Aggro {
 }
 
 impl Behavior for Aggro {
-    fn update(&self, pos: Point, move_info: Rc<RefCell<MoveInfo>>, map: &mut Box<Map> ) -> Point {
+    fn update(&self, pos: Point, move_info: Rc<RefCell<MoveInfo>>, map: Rc<Map> ) -> Point {
         let player_pos = move_info.borrow().deref().player_pos;
         let distance = pos.distance_to(player_pos);
         if distance < 2f32 || distance > self.radius {

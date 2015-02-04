@@ -26,26 +26,26 @@ pub struct Actor<'a> {
 }
 
 impl<'a> Actor<'a> {
-    pub fn new_actor(t: ActorType, p: Point, map: &Box<Map>) -> Actor<'a> {
+    pub fn new_actor(t: ActorType, p: Point, map: &Rc<Map>) -> Actor<'a> {
         match t {
             ActorType::Dog => { Actor::dog(p.x, p.y, map) },
             ActorType::Player => { Actor::player(p.x, p.y, map) }
         }
     }
 
-    pub fn player(x: i32, y: i32, map: &Box<Map>) -> Actor<'a> {
+    pub fn player(x: i32, y: i32, map: &Rc<Map>) -> Actor<'a> {
         let behavior: Box<Behavior> = box Player;
         let position = map.find_empty_tile(Point{ x: x, y: y });
         Actor::new(position.x, position.y, '@', Color::White, behavior)
     }
 
-    pub fn dog(x: i32, y: i32, map: &Box<Map>) -> Actor<'a> {
+    pub fn dog(x: i32, y: i32, map: &Rc<Map>) -> Actor<'a> {
         let behavior: Box<Behavior> = box Wanderer;
         let position = map.find_empty_tile(Point{ x: x, y: y });
         Actor::new(position.x, position.y, 'd', Color::DarkAmber, behavior)
     }
 
-    pub fn kobold(x: i32, y: i32, map: &Box<Map>) -> Actor<'a> {
+    pub fn kobold(x: i32, y: i32, map: &Rc<Map>) -> Actor<'a> {
         let behavior: Box<Behavior> = box Aggro { radius: 10f32 };
         let pos = map.find_empty_tile(Point { x: x, y: y });
         Actor::new(pos.x, pos.y, 'k', Color::DarkerGreen, behavior)
@@ -60,7 +60,7 @@ impl<'a> Actor<'a> {
         }
     }
 
-    pub fn update(&mut self, move_info: Rc<RefCell<MoveInfo>>, map: &mut Box<Map>) {
+    pub fn update(&mut self, move_info: Rc<RefCell<MoveInfo>>, map: Rc<Map>) {
         self.position = self.behavior.update(self.position, move_info, map);
     }
 

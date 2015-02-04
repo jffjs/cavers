@@ -19,12 +19,13 @@ pub mod state;
 pub struct MoveInfo {
     pub last_keypress: Option<KeyboardInput>,
     pub player_pos: Point,
+    pub view_origin: Point,
     pub bounds: Bounds
 }
 
 impl MoveInfo {
     pub fn new(bounds: Bounds, player_pos: Point) -> MoveInfo {
-        MoveInfo{ last_keypress: None, bounds: bounds, player_pos: player_pos }
+        MoveInfo{ last_keypress: None, bounds: bounds, player_pos: player_pos, view_origin: player_pos }
     }
 }
 
@@ -36,7 +37,7 @@ pub struct Game<'a> {
     pub menu_window: Box<Window>,
     pub map_window: Box<Window>,
     pub msg_window: Box<Window>,
-    pub map: Box<Map<'a>>,
+    pub map: Rc<Map<'a>>,
     pub player: Box<Actor<'a>>,
     pub actors: Vec<Box<Actor<'a>>>,
     pub game_state: Box<GameState + 'a>
@@ -54,14 +55,14 @@ impl<'a> Game<'a> {
         let map_window = box Window::new(map_window_bounds);
         let msg_window = box Window::new(msg_window_bounds);
         let rc: Box<TcodRenderingComponent> = box TcodRenderingComponent::new(console);
-        let map = box Map::new(map_bounds, map_window_bounds, terrain::random::cave(map_bounds, 4));
+        let map = Rc::new(Map::new(map_bounds, map_window_bounds, terrain::random::cave(map_bounds, 4)));
         let c = box Actor::player(40, 25, &map);
         let d = box Actor::dog(10, 10, &map);
         let k = box Actor::kobold(20, 20, &map);
         let actors = vec![d, k];
-        let gs: Box<GameState> = box MovementState;
-
         let move_info = Rc::new(RefCell::new(MoveInfo::new(map_bounds, c.position)));
+        let gs: Box<GameState> = box MovementState::new(map.clone(), move_info.clone());
+
         Game {
             move_info: move_info,
             exit: false,
@@ -79,14 +80,14 @@ impl<'a> Game<'a> {
 
     pub fn render(&mut self) {
         let mut windows = vec![&mut self.menu_window, &mut self.msg_window];
-        self.game_state.render(&mut self.rendering_component, &self.actors, &self.player, &mut windows, &mut self.map );
+        self.game_state.render(&mut self.rendering_component, &self.actors, &self.player, &mut windows);
     }
 
     pub fn update(&mut self) {
-        let next_state = self.game_state.update(&mut self.actors, &mut self.player, &mut self.map, self.move_info.clone());
+        let next_state = self.game_state.update(&mut self.actors, &mut self.player);
         match next_state {
-            State::Movement => self.game_state = box MovementState,
-            _ => self.game_state = box MovementState
+            State::Movement => self.game_state = box MovementState::new(self.map.clone(), self.move_info.clone()),
+            _ => self.game_state = box MovementState::new(self.map.clone(), self.move_info.clone())
         }
     }
 }

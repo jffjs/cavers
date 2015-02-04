@@ -1,4 +1,8 @@
+use core::ops::{Deref, DerefMut};
 use std::cmp;
+use std::cell::RefCell;
+use std::rc::Rc;
+use game::MoveInfo;
 use geom::{Bounds, Point};
 use geom::Contains::{DoesContain, DoesNotContain};
 use input::keyboard::{KeyCode, KeyboardInput};
@@ -74,10 +78,12 @@ impl<'a> Map<'a> {
         }
     }
 
-    pub fn render(&mut self, center: Point, renderer: &mut Box<RenderingComponent>) {
+    pub fn render(&self, move_info: Rc<RefCell<MoveInfo>>, renderer: &mut Box<RenderingComponent>) {
+        let center = move_info.borrow().deref().player_pos;
         let start_x = self.scroll_x(center);
         let start_y = self.scroll_y(center);
-        self.view_origin = Point { x: start_x, y: start_y };
+
+        move_info.borrow_mut().deref_mut().view_origin = Point { x: start_x, y: start_y };
         for x in (0..self.window_bounds.width()) {
             for y in (0..self.window_bounds.height()) {
                 let tx = x + start_x;
