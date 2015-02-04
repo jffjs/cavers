@@ -6,6 +6,7 @@ use map::Map;
 use rendering::renderer::RenderingComponent;
 use rendering::window::Window;
 
+#[derive(Copy)]
 pub enum State {
     Start,
     Movement
