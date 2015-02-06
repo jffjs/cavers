@@ -7,7 +7,7 @@ use rendering::Color;
 pub struct Window {
     pub console: Console,
     pub background_color: Color,
-    bounds: Bounds
+    pub bounds: Bounds,
 }
 
 impl Window {
@@ -18,7 +18,7 @@ impl Window {
         Window {
             console: console,
             background_color: Color::Black,
-            bounds: bounds
+            bounds: bounds,
         }
     }
 

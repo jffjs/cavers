@@ -21,7 +21,7 @@ pub struct TcodRenderingComponent {
 impl TcodRenderingComponent {
     pub fn new(console: Console) -> TcodRenderingComponent {
         TcodRenderingComponent {
-            console: console
+            console: console,
         }
     }
 }
@@ -30,9 +30,9 @@ impl RenderingComponent for TcodRenderingComponent {
     fn attach_window(&mut self, window: &mut Box<Window>) {
         window.clear();
         window.print_message(0, 0, TextAlignment::Left, "Hello, world!");
+        window.print_message(0, 1, TextAlignment::Left, "Hello, world!");
         let bounds = window.get_bounds();
         let console = window.get_console();
-        println!("{}, {}", bounds.min.x, bounds.min.y);
         Console::blit(&*console,
                       0, 0,
                       bounds.width(), bounds.height(),
@@ -41,10 +41,12 @@ impl RenderingComponent for TcodRenderingComponent {
                       1f32, 1f32);
     }
 
+    // take vec of windows
     fn before_render_new_frame(&mut self) {
         self.console.clear();
     }
 
+    // write to window
     fn render_object(&mut self, position: &Point, glyph: char) {
         self.console.put_char(position.x, position.y, glyph, BackgroundFlag::Set);
     }
@@ -53,6 +55,7 @@ impl RenderingComponent for TcodRenderingComponent {
         self.console.put_char_ex(position.x, position.y, glyph, fore_color.value(), back_color.value());
     }
 
+    // blit windows on console
     fn after_render_new_frame(&mut self) {
         Console::flush();
     }

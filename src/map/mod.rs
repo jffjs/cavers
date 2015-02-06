@@ -12,25 +12,24 @@ use terrain::{Tile, TileType};
 
 pub struct Map<'a> {
     pub bounds: Bounds,
-    pub window_bounds: Bounds,
     pub view_origin: Point,
     pub tiles: Vec<Vec<Box<Tile>>>
 }
 
 impl<'a> Map<'a> {
-    pub fn new(bounds: Bounds, window_bounds: Bounds, tiles: Vec<Vec<Box<Tile>>>) -> Map<'a> {
-        Map { bounds: bounds, window_bounds: window_bounds, view_origin: Point { x: 0, y: 0}, tiles: tiles }
+    pub fn new(bounds: Bounds, tiles: Vec<Vec<Box<Tile>>>) -> Map<'a> {
+        Map { bounds: bounds, view_origin: Point { x: 0, y: 0}, tiles: tiles }
     }
 
-    pub fn scroll_x(&self, center: Point) -> i32 {
-        let screen_width = self.window_bounds.width();
+    pub fn scroll_x(&self, center: Point, window_bounds: &Bounds) -> i32 {
+        let screen_width = window_bounds.width();
         let world_width = self.bounds.width();
         let center_x = center.x as i32;
         cmp::max(0, cmp::min(center_x - screen_width / 2, world_width - screen_width))
     }
 
-    pub fn scroll_y(&self, center: Point) -> i32 {
-        let screen_height = self.window_bounds.height();
+    pub fn scroll_y(&self, center: Point, window_bounds: &Bounds) -> i32 {
+        let screen_height = window_bounds.height();
         let world_height = self.bounds.height();
         let center_y = center.y as i32;
         cmp::max(0, cmp::min(center_y - screen_height / 2, world_height - screen_height))
@@ -78,14 +77,14 @@ impl<'a> Map<'a> {
         }
     }
 
-    pub fn render(&self, move_info: Rc<RefCell<MoveInfo>>, renderer: &mut Box<RenderingComponent>) {
+    pub fn render(&self, window_bounds: Bounds, move_info: Rc<RefCell<MoveInfo>>, renderer: &mut Box<RenderingComponent>) {
         let center = move_info.borrow().deref().player_pos;
-        let start_x = self.scroll_x(center);
-        let start_y = self.scroll_y(center);
+        let start_x = self.scroll_x(center, &window_bounds);
+        let start_y = self.scroll_y(center, &window_bounds);
 
         move_info.borrow_mut().deref_mut().view_origin = Point { x: start_x, y: start_y };
-        for x in (0..self.window_bounds.width()) {
-            for y in (0..self.window_bounds.height()) {
+        for x in (0 .. window_bounds.width()) {
+            for y in (0 .. window_bounds.height()) {
                 let tx = x + start_x;
                 let ty = y + start_y;
                 let tile = self.get_tile(Point { x: tx, y: ty });

@@ -34,9 +34,6 @@ pub struct Game<'a> {
     pub exit: bool,
     pub window_bounds: Bounds,
     pub rendering_component: Box<RenderingComponent + 'a>,
-    pub menu_window: Box<Window>,
-    pub map_window: Box<Window>,
-    pub msg_window: Box<Window>,
     pub map: Rc<Map<'a>>,
     pub player: Box<Actor<'a>>,
     pub actors: Vec<Box<Actor<'a>>>,
@@ -47,15 +44,9 @@ impl<'a> Game<'a> {
     pub fn new() -> Game<'a> {
         let window_bounds = Bounds::new(0, 0, 79, 49);
         let map_bounds = Bounds::new(0, 0, 199, 199);
-        let map_window_bounds = Bounds::new(0, 0, 59, 48);
-        let msg_window_bounds = Bounds::new(0, 49, 59, 49);
-        let menu_window_bounds = Bounds::new(60, 0, 79, 49);
         let console = Console::init_root(window_bounds.max.x + 1, window_bounds.max.y + 1, "cavers", false);
-        let menu_window = box Window::new(menu_window_bounds);
-        let map_window = box Window::new(map_window_bounds);
-        let msg_window = box Window::new(msg_window_bounds);
         let rc: Box<TcodRenderingComponent> = box TcodRenderingComponent::new(console);
-        let map = Rc::new(Map::new(map_bounds, map_window_bounds, terrain::random::cave(map_bounds, 4)));
+        let map = Rc::new(Map::new(map_bounds, terrain::random::cave(map_bounds, 4)));
         let c = box Actor::player(40, 25, &map);
         let d = box Actor::dog(10, 10, &map);
         let k = box Actor::kobold(20, 20, &map);
@@ -68,9 +59,6 @@ impl<'a> Game<'a> {
             exit: false,
             window_bounds: window_bounds,
             rendering_component: rc,
-            menu_window: menu_window,
-            map_window: map_window,
-            msg_window: msg_window,
             map: map,
             player: c,
             actors: actors,
@@ -79,8 +67,7 @@ impl<'a> Game<'a> {
     }
 
     pub fn render(&mut self) {
-        let mut windows = vec![&mut self.menu_window, &mut self.msg_window];
-        self.game_state.render(&mut self.rendering_component, &self.actors, &self.player, &mut windows);
+        self.game_state.render(&mut self.rendering_component, &self.actors, &self.player);
     }
 
     pub fn update(&mut self) {
