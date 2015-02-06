@@ -1,11 +1,12 @@
 extern crate tcod;
 use self::tcod::{Console, BackgroundFlag, TextAlignment};
+use game::state::Screen;
 use geom::{Point};
 use rendering::Color;
 use rendering::window::Window;
 
 pub trait RenderingComponent {
-    fn attach_window(&mut self, &mut Box<Window>);
+    fn attach_window(&mut self, &mut Box<Window>, Screen);
     fn before_render_new_frame(&mut self);
     fn render_object(&mut self, &Point, char);
     fn render_object_with_color(&mut self, &Point, char, Color, Color);
@@ -27,10 +28,14 @@ impl TcodRenderingComponent {
 }
 
 impl RenderingComponent for TcodRenderingComponent {
-    fn attach_window(&mut self, window: &mut Box<Window>) {
+    fn attach_window(&mut self, window: &mut Box<Window>, screen: Screen) {
         window.clear();
-        window.print_message(0, 0, TextAlignment::Left, "Hello, world!");
-        window.print_message(0, 1, TextAlignment::Left, "Hello, world!");
+        // window.print_message(0, 1, TextAlignment::Left, "Hello, world!");
+        let mut y = 0;
+        for line in screen.data.iter() {
+            window.print_message(0, y, TextAlignment::Left, *line);
+            y += 1;
+        }
         let bounds = window.get_bounds();
         let console = window.get_console();
         Console::blit(&*console,
