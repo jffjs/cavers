@@ -4,7 +4,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use self::tcod::{Console};
 use actor::Actor;
-use game::state::{State, GameState, MovementState};
+use game::state::{State};//, GameState, MessagesState, MovementState};
 use geom::{Bounds, Point};
 use input::keyboard::KeyboardInput;
 use map::Map;
@@ -37,7 +37,8 @@ pub struct Game<'a> {
     pub map: Rc<Map<'a>>,
     pub player: Box<Actor<'a>>,
     pub actors: Vec<Box<Actor<'a>>>,
-    pub game_state: Box<GameState + 'a>
+    pub game_state: Box<state::GameState + 'a>,
+    pub game_state_type: State
 }
 
 impl<'a> Game<'a> {
@@ -52,7 +53,7 @@ impl<'a> Game<'a> {
         let k = box Actor::kobold(20, 20, &map);
         let actors = vec![d, k];
         let move_info = Rc::new(RefCell::new(MoveInfo::new(map_bounds, c.position)));
-        let gs: Box<GameState> = box MovementState::new(map.clone(), move_info.clone());
+        let gs: Box<state::GameState> = box state::movement_state::MovementState::new(map.clone(), move_info.clone());
 
         Game {
             move_info: move_info,
@@ -62,7 +63,8 @@ impl<'a> Game<'a> {
             map: map,
             player: c,
             actors: actors,
-            game_state: gs
+            game_state: gs,
+            game_state_type: State::Movement
         }
     }
 
@@ -72,9 +74,12 @@ impl<'a> Game<'a> {
 
     pub fn update(&mut self) {
         let next_state = self.game_state.update(&mut self.actors, &mut self.player);
+        self.game_state_type = next_state;
         match next_state {
-            State::Movement => self.game_state = box MovementState::new(self.map.clone(), self.move_info.clone()),
-            _ => self.game_state = box MovementState::new(self.map.clone(), self.move_info.clone())
-        }
+            State::Exit => self.exit = true,
+            State::Messages => self.game_state = box state::messages_state::MessagesState::new(self.move_info.clone()),
+            State::Movement => self.game_state = box state::movement_state::MovementState::new(self.map.clone(), self.move_info.clone()),
+            _ => self.game_state = box state::movement_state::MovementState::new(self.map.clone(), self.move_info.clone())
+        };
     }
 }

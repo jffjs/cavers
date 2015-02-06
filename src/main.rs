@@ -33,6 +33,6 @@ fn main() {
 }
 
 
-// TODO: game states
-// TODO: displaying appropiate content in windows for state
+// TODO: macro for tcod key mappings
 // TODO: combat
+// TODO: make bounds and window sizes dynamic, ratio based

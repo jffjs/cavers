@@ -34,6 +34,7 @@ pub mod keyboard {
         translate_input(Console::wait_for_keypress(true))
     }
 
+    // TODO: Try making a macro for this to avoid all the repetition
     fn translate_input(key_state: KeyState) -> KeyboardInput {
         let key: Key = if key_state.shift {
             match key_state.key {
@@ -46,6 +47,10 @@ pub mod keyboard {
         } else {
             match key_state.key {
                 self::tcod::Key::Printable('/')                 => Key::Printable('/'),
+                self::tcod::Key::Printable('a')                 => Key::Printable('a'),
+                self::tcod::Key::Printable('b')                 => Key::Printable('b'),
+                self::tcod::Key::Printable('m')                 => Key::Printable('m'),
+                self::tcod::Key::Printable('q')                 => Key::Printable('q'),
                 self::tcod::Key::Special(tcod::KeyCode::Up)     => Key::Special(KeyCode::Up),
                 self::tcod::Key::Special(tcod::KeyCode::Down)   => Key::Special(KeyCode::Down),
                 self::tcod::Key::Special(tcod::KeyCode::Left)   => Key::Special(KeyCode::Left),

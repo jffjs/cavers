@@ -1,9 +1,8 @@
 extern crate tcod;
 use self::tcod::{Console, BackgroundFlag, TextAlignment};
-use game::state::Screen;
 use geom::{Point};
 use rendering::Color;
-use rendering::window::Window;
+use rendering::window::{Screen, Window};
 
 pub trait RenderingComponent {
     fn attach_window(&mut self, &mut Box<Window>, Screen);

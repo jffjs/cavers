@@ -4,6 +4,20 @@ use self::tcod::{Console, BackgroundFlag};
 use geom::Bounds;
 use rendering::Color;
 
+pub struct Screen<'a> {
+    pub data: Vec<&'a str>
+}
+
+impl<'a> Screen<'a> {
+    pub fn new(data: Vec<&'a str>) -> Screen<'a> {
+        Screen { data: data }
+    }
+
+    pub fn push_line(&mut self, line: &'a str) {
+        self.data.push(line);
+    }
+}
+
 pub struct Window {
     pub console: Console,
     pub background_color: Color,
