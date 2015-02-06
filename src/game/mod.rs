@@ -11,7 +11,6 @@ use map::Map;
 use terrain;
 use rendering::renderer::RenderingComponent;
 use rendering::renderer::TcodRenderingComponent;
-use rendering::window::Window;
 
 pub mod state;
 
