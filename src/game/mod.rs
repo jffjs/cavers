@@ -76,6 +76,7 @@ impl<'a> Game<'a> {
         self.game_state_type = next_state;
         match next_state {
             State::Exit => self.exit = true,
+            State::Attack => self.game_state = box state::attack_state::AttackState::new(self.map.clone(), self.move_info.clone()),
             State::Messages => self.game_state = box state::messages_state::MessagesState::new(self.move_info.clone()),
             State::Movement => self.game_state = box state::movement_state::MovementState::new(self.map.clone(), self.move_info.clone()),
             _ => self.game_state = box state::movement_state::MovementState::new(self.map.clone(), self.move_info.clone())

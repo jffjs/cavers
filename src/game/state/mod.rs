@@ -1,15 +1,17 @@
 use actor::Actor;
 use rendering::renderer::RenderingComponent;
 
+pub mod attack_state;
 pub mod messages_state;
 pub mod movement_state;
 
 #[derive(Copy)]
 pub enum State {
-    Start,
+    Attack,
     Exit,
     Messages,
     Movement,
+    Start,
 }
 
 pub trait GameState {

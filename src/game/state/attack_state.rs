@@ -11,34 +11,32 @@ use map::Map;
 use rendering::renderer::RenderingComponent;
 use rendering::window::{Screen, Window};
 
-pub struct MovementState<'a> {
+pub struct AttackState<'a> {
     pub map: Rc<Map<'a>>,
     pub move_info: Rc<RefCell<MoveInfo>>,
-    pub menu_window: Box<Window>,
+    pub combat_window: Box<Window>,
     pub map_window: Box<Window>,
     pub msg_window: Box<Window>,
 }
 
-impl<'a> MovementState<'a> {
-    pub fn new(map: Rc<Map>, move_info: Rc<RefCell<MoveInfo>>) -> MovementState {
+impl<'a> AttackState<'a> {
+    pub fn new(map: Rc<Map>, move_info: Rc<RefCell<MoveInfo>>) -> AttackState {
         let msg_window = box Window::new(Bounds::new(0, 49, 59, 49));
         let map_window = box Window::new(Bounds::new(0, 0, 59, 48));
-        let menu_window = box Window::new(Bounds::new(60, 0, 79, 49));
-        MovementState { map: map, move_info: move_info, menu_window: menu_window, map_window: map_window, msg_window: msg_window }
+        let combat_window = box Window::new(Bounds::new(60, 0, 79, 49));
+        AttackState { map: map, move_info: move_info, combat_window: combat_window, map_window: map_window, msg_window: msg_window }
     }
 
-    pub fn menu_screen() -> Screen<'a> {
+    pub fn combat_screen() -> Screen<'a> {
         let screen = vec![
-            "a - Attack",
-            "m - Messages",
-            "q - Quit"
-                ];
+            "Select a target",
+        ];
 
         Screen::new(screen)
     }
 }
 
-impl<'a> GameState for MovementState<'a> {
+impl<'a> GameState for AttackState<'a> {
     fn update(&mut self, mobs: &mut Vec<Box<Actor>>, player: &mut Box<Actor>) -> State {
         let keypress = match self.move_info.borrow().deref().last_keypress {
             Some(k) => { k },
@@ -46,16 +44,8 @@ impl<'a> GameState for MovementState<'a> {
         };
 
         match keypress.key {
-            Printable('a') => State::Attack,
-            Printable('m') => State::Messages,
-            Printable('q') => State::Exit,
-            _ => {
-                player.update(self.move_info.clone(), self.map.clone());
-                for i in mobs.iter_mut() {
-                    i.update(self.move_info.clone(), self.map.clone());
-                }
-                State::Movement
-            }
+            Printable('b') => State::Movement,
+            _ => { State::Attack }
         }
     }
 
@@ -63,7 +53,7 @@ impl<'a> GameState for MovementState<'a> {
         renderer.before_render_new_frame();
         renderer.attach_window(&mut self.map_window, Screen::new(vec![]));
         renderer.attach_window(&mut self.msg_window, Screen::new(vec![]));
-        renderer.attach_window(&mut self.menu_window, MovementState::menu_screen());
+        renderer.attach_window(&mut self.combat_window, AttackState::combat_screen());
         self.map.render(self.map_window.bounds, self.move_info.clone(), renderer);
         for m in mobs.iter() {
             m.render(self.move_info.borrow().deref().view_origin, renderer);
